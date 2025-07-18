@@ -1,47 +1,56 @@
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
+import JSON from "./components/JSON.vue"
+import JSONSolution from "./components/JSONSolution.vue"
+import Form from "./components/Form.vue";
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
+  <div class="app-container">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
+      <div class="container">
+        <a class="navbar-brand" href="#">Library Application</a>
+      </div>
+    </nav>
 
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
-  </header>
+    <main>
+      <!-- <JSON /> -->
+      <!-- <JSONSolution /> -->
+      <Form />
+    </main>
 
-  <main>
-    <TheWelcome />
-  </main>
+    <footer class="mt-5 py-3 text-center text-muted">
+      <div class="container">
+        <p>© 2023 Library Application - FIT5032 Assignment</p>
+      </div>
+    </footer>
+  </div>
 </template>
 
-<style scoped>
-header {
-  line-height: 1.5;
+<style>
+body {
+  background-color: #f8f9fa;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
+.app-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
+main {
+  flex: 1;
+}
 
-  .logo {
-    margin: 0 2rem 0 0;
-  }
+.navbar-brand {
+  font-weight: bold;
+  letter-spacing: 1px;
+}
 
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
+/* Responsive adjustments */
+@media (max-width: 576px) {
+  .navbar-brand {
+    font-size: 1.1rem;
   }
 }
 </style>
