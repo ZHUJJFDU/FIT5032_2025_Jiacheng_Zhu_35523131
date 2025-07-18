@@ -6,11 +6,7 @@ import Form from "./components/Form.vue";
 
 <template>
   <div class="app-container">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
-      <div class="container">
-        <a class="navbar-brand" href="#">Library Application</a>
-      </div>
-    </nav>
+
 
     <main>
       <!-- <JSON /> -->
