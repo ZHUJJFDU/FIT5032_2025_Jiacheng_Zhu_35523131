@@ -1,52 +1,45 @@
 <script setup>
-import JSON from "./components/JSON.vue"
-import JSONSolution from "./components/JSONSolution.vue"
-import Form from "./components/Form.vue";
+import JSONLab from './components/JSONLab.vue'
+import BHeader from './components/BHeader.vue'
+import LibraryRegistrationForm from './components/LibraryRegistrationForm.vue'
 </script>
 
 <template>
-  <div class="app-container">
+  <header>
+    <BHeader />
+  </header>
 
-
-    <main>
-      <!-- <JSON /> -->
-      <!-- <JSONSolution /> -->
-      <Form />
-    </main>
-
-    <footer class="mt-5 py-3 text-center text-muted">
-      <div class="container">
-        <p>© 2023 Library Application - FIT5032 Assignment</p>
-      </div>
-    </footer>
-  </div>
+  <main>
+    <LibraryRegistrationForm />
+    <!-- <JSONLab /> -->
+  </main>
 </template>
 
-<style>
-body {
-  background-color: #f8f9fa;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+<style scoped>
+/* header {
+  line-height: 1.5;
 }
 
-.app-container {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+.logo {
+  display: block;
+  margin: 0 auto 2rem;
 }
 
-main {
-  flex: 1;
-}
-
-.navbar-brand {
-  font-weight: bold;
-  letter-spacing: 1px;
-}
-
-/* Responsive adjustments */
-@media (max-width: 576px) {
-  .navbar-brand {
-    font-size: 1.1rem;
+@media (min-width: 1024px) {
+  header {
+    display: flex;
+    place-items: center;
+    padding-right: calc(var(--section-gap) / 2);
   }
-}
+
+  .logo {
+    margin: 0 2rem 0 0;
+  }
+
+  header .wrapper {
+    display: flex;
+    place-items: flex-start;
+    flex-wrap: wrap;
+  }
+} */
 </style>
