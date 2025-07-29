@@ -6,9 +6,11 @@ import Column from 'primevue/column'
 const formData = ref({
   username: '',
   password: '',
+  confirmPassword: '',
   isAustralian: false,
   reason: '',
-  gender: ''
+  gender: '',
+  suburb: 'Clayton' // Add suburb with a default value
 })
 
 const submittedCards = ref([])
@@ -16,9 +18,20 @@ const submittedCards = ref([])
 const submitForm = () => {
   validateName(true)
   validatePassword(true)
-  if (!errors.value.username && !errors.value.password) {
+  validateConfirmPassword(true)
+  if (!errors.value.username && !errors.value.password && !errors.value.confirmPassword) {
     submittedCards.value.push({ ...formData.value })
     clearForm()
+  }
+}
+
+const reasonMessage = ref('')
+
+const validateReason = () => {
+  if (formData.value.reason.toLowerCase().includes('friend')) {
+    reasonMessage.value = 'Great to have a friend'
+  } else {
+    reasonMessage.value = ''
   }
 }
 
@@ -26,15 +39,26 @@ const clearForm = () => {
   formData.value = {
     username: '',
     password: '',
+    confirmPassword: '',
     isAustralian: false,
     reason: '',
-    gender: ''
+    gender: '',
+    suburb: 'Clayton' // Also reset it here
+  }
+  errors.value = {
+    username: null,
+    password: null,
+    confirmPassword: null,
+    resident: null,
+    gender: null,
+    reason: null
   }
 }
 
 const errors = ref({
   username: null,
   password: null,
+  confirmPassword: null,
   resident: null,
   gender: null,
   reason: null
@@ -70,6 +94,14 @@ const validatePassword = (blur) => {
     errors.value.password = null
   }
 }
+
+const validateConfirmPassword = (blur) => {
+  if (formData.value.password !== formData.value.confirmPassword) {
+    if (blur) errors.value.confirmPassword = 'Passwords do not match.'
+  } else {
+    errors.value.confirmPassword = null
+  }
+}
 </script>
 
 <template>
@@ -84,7 +116,7 @@ const validatePassword = (blur) => {
         </p>
         <form @submit.prevent="submitForm">
           <div class="row mb-3">
-            <div class="col-md-6 col-sm-6">
+            <div class="col-md-12">
               <label for="username" class="form-label">Username</label>
               <input
                 type="text"
@@ -96,7 +128,9 @@ const validatePassword = (blur) => {
               />
               <div v-if="errors.username" class="text-danger">{{ errors.username }}</div>
             </div>
+          </div>
 
+          <div class="row mb-3">
             <div class="col-md-6 col-sm-6">
               <label for="password" class="form-label">Password</label>
               <input
@@ -109,7 +143,21 @@ const validatePassword = (blur) => {
               />
               <div v-if="errors.password" class="text-danger">{{ errors.password }}</div>
             </div>
+
+            <div class="col-md-6 col-sm-6">
+              <label for="confirmPassword" class="form-label">Confirm Password</label>
+              <input
+                type="password"
+                class="form-control"
+                id="confirmPassword"
+                @blur="() => validateConfirmPassword(true)"
+                @input="() => validateConfirmPassword(false)"
+                v-model="formData.confirmPassword"
+              />
+              <div v-if="errors.confirmPassword" class="text-danger">{{ errors.confirmPassword }}</div>
+            </div>
           </div>
+
           <div class="row mb-3">
             <div class="col-md-6 col-sm-6">
               <div class="form-check">
@@ -132,13 +180,20 @@ const validatePassword = (blur) => {
             </div>
           </div>
           <div class="mb-3">
+            <label for="suburb" class="form-label">Suburb</label>
+            <input type="text" class="form-control" id="suburb" v-model="formData.suburb" />
+          </div>
+
+          <div class="mb-3">
             <label for="reason" class="form-label">Reason for joining</label>
             <textarea
               class="form-control"
               id="reason"
               rows="3"
               v-model="formData.reason"
+              @input="validateReason"
             ></textarea>
+            <div v-if="reasonMessage" class="text-success">{{ reasonMessage }}</div>
           </div>
           <div class="text-center">
             <button type="submit" class="btn btn-primary me-2">Submit</button>
@@ -216,5 +271,8 @@ const validatePassword = (blur) => {
 }
 .list-group-item {
   padding: 10px;
+}
+.text-success {
+  color: green;
 }
 </style>
