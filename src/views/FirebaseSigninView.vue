@@ -4,7 +4,7 @@
       <div class="col-md-6">
         <div class="card">
           <div class="card-header">
-            <h3 class="text-center">Firebase Authentication</h3>
+            <h3 class="text-center">Sign in</h3>
           </div>
           <div class="card-body">
             <div class="mb-3">
@@ -27,28 +27,15 @@
                 placeholder="Enter your password"
               >
             </div>
-            <div class="d-grid gap-2">
+            <div class="d-grid">
               <button 
-                @click="signIn" 
-                class="btn btn-primary" 
-                :disabled="loading"
+                @click="signin" 
+                class="btn btn-primary"
               >
-                {{ loading ? 'Signing in...' : 'Sign In' }}
-              </button>
-              <button 
-                @click="signUp" 
-                class="btn btn-secondary" 
-                :disabled="loading"
-              >
-                {{ loading ? 'Signing up...' : 'Sign Up' }}
+                Sign in via Firebase
               </button>
             </div>
-            <div v-if="error" class="alert alert-danger mt-3">
-              {{ error }}
-            </div>
-            <div v-if="success" class="alert alert-success mt-3">
-              {{ success }}
-            </div>
+
           </div>
         </div>
       </div>
@@ -57,25 +44,26 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref } from "vue";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { useRouter } from "vue-router";
 
-const router = useRouter()
-const email = ref('')
-const password = ref('')
-const loading = ref(false)
-const error = ref('')
-const success = ref('')
+const email = ref("");
+const password = ref("");
+const router = useRouter();
+const auth = getAuth();
 
-const signIn = async () => {
-  // TODO: Implement Firebase sign in
-  console.log('Sign in with:', email.value, password.value)
-}
-
-const signUp = async () => {
-  // TODO: Implement Firebase sign up
-  console.log('Sign up with:', email.value, password.value)
-}
+const signin = () => {
+  signInWithEmailAndPassword(auth, email.value, password.value)
+    .then((data) => {
+      console.log("Firebase Login Successful!");
+      router.push("/");
+      console.log(auth.currentUser);
+    })
+    .catch((error) => {
+      console.log(error.code);
+    });
+};
 </script>
 
 <style scoped>
