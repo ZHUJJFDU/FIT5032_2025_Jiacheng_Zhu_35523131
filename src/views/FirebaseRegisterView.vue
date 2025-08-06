@@ -51,11 +51,12 @@
 
 <script setup>
 import { ref } from 'vue'
-import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth'
+import { createUserWithEmailAndPassword } from 'firebase/auth'
+import { auth } from '@/firebase/init.js'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
-const auth = getAuth()
+
 const email = ref('')
 const password = ref('')
 const loading = ref(false)
