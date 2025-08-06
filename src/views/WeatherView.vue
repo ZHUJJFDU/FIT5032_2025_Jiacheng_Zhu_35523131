@@ -9,8 +9,8 @@
           placeholder="Enter city name"
           class="search-input"
         />
-        <button @click="searchByCity" class="search-button">
-          Search
+        <button @click="searchByCity" class="search-button" :disabled="loading">
+          {{ loading ? 'Loading...' : 'Search' }}
         </button>
         <br>
         <br>
@@ -19,7 +19,18 @@
     </div>
  
     <main>
-      <div v-if="weatherData">
+      <!-- Loading state -->
+      <div v-if="loading" class="loading">
+        <p>Loading weather data...</p>
+      </div>
+      
+      <!-- Error state -->
+      <div v-else-if="error" class="error">
+        <p>{{ error }}</p>
+      </div>
+      
+      <!-- Weather data -->
+      <div v-else-if="weatherData">
         <h2>
           {{ weatherData.name }}, {{ weatherData.sys.country }}
         </h2>
@@ -28,6 +39,11 @@
           <p>{{ temperature }} °C</p>
         </div>
         <span>{{ weatherData.weather[0].description }}</span>
+      </div>
+      
+      <!-- Initial state -->
+      <div v-else class="initial-state">
+        <p>Enter a city name to search for weather information</p>
       </div>
     </main>
   </div>
@@ -46,6 +62,8 @@ export default {
       weatherData: null,
       hourlyForecast: [],
       dailyForecast: [],
+      error: null,
+      loading: false
     };
   },
   computed: {
@@ -57,7 +75,7 @@ export default {
     //Get the current weather icon using the API link
     iconUrl() {
       return this.weatherData
-        ? `http://api.openweathermap.org/img/w/${this.weatherData.weather[0].icon}.png`
+        ? `https://api.openweathermap.org/img/w/${this.weatherData.weather[0].icon}.png`
         : null;
     },
   },
@@ -68,15 +86,24 @@ export default {
   methods: {
  
     async fetchCurrentLocationWeather() {
+      this.loading = true;
+      this.error = null;
    
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(async (position) => {
           const { latitude, longitude } = position.coords;
           //API link to obtain the current weather based on the current location browser identified 
-          const url = `http://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apikey}`;
+          const url = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apikey}`;
           //await means wait for the fetchWeatherData method to complete before proceeding
           await this.fetchWeatherData(url);
+        }, (error) => {
+          console.error("Geolocation error:", error);
+          this.error = "Unable to get your location. Please search for a city instead.";
+          this.loading = false;
         });
+      } else {
+        this.error = "Geolocation is not supported by this browser.";
+        this.loading = false;
       }
     },
     async fetchWeatherData(url) {
@@ -84,13 +111,20 @@ export default {
         const response = await axios.get(url);
         //Returned data from API is stored as JSON file in weatherData
         this.weatherData = response.data;
+        this.error = null;
       } catch (error) {
         console.error("Error fetching weather data:", error);
+        this.error = "Error fetching weather data. Please check your internet connection and try again.";
+        this.weatherData = null;
+      } finally {
+        this.loading = false;
       }
     },
     searchByCity() {
       if (this.city.trim()) {
-        const url = `http://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(this.city)}&appid=${apikey}`;
+        this.loading = true;
+        this.error = null;
+        const url = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(this.city)}&appid=${apikey}`;
         this.fetchWeatherData(url);
       }
     }
@@ -139,8 +173,13 @@ export default {
   cursor: pointer;
 }
 
-.search-button:hover {
+.search-button:hover:not(:disabled) {
   background-color: #0056b3;
+}
+
+.search-button:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
 }
 
 main {
@@ -167,5 +206,25 @@ main p {
 main span {
   font-size: 1.2em;
   color: #666;
+}
+
+.loading {
+  padding: 20px;
+  color: #666;
+}
+
+.error {
+  padding: 20px;
+  color: #dc3545;
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  border-radius: 4px;
+  margin: 20px 0;
+}
+
+.initial-state {
+  padding: 20px;
+  color: #666;
+  font-style: italic;
 }
 </style> 
